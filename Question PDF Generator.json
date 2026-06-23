@@ -1,0 +1,176 @@
+{
+  "name": "Question PDF Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "AI PDF Question Generator",
+        "formDescription": "Upload a PDF file to generate Easy, Medium, and Hard SAQ questions automatically.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Upload PDF",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -672,
+        0
+      ],
+      "id": "94738c55-f9c7-43b1-84ca-5ad0a9f0f90b",
+      "name": "On form submission",
+      "webhookId": "44d4cc87-fcdd-4e82-a144-c4acb793edbe"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Upload_PDF",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        0
+      ],
+      "id": "6a2ba19e-3ab1-4800-9b8b-e5e0d1f3a3dd",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ROLE:\nYou are an expert CBSE question paper setter and examiner with deep knowledge of NCERT curriculum, Blooms Taxonomy, and CBSE board examination patterns.\n\nPRE-REQUISITES:\n\n* Board: CBSE\n* Class: 12\n* Subject: Physics\n* Chapter Number: 8\n* Chapter Title: Electromagnetic Waves\n\nPDF DESCRIPTION:\nThe uploaded PDF is CBSE Class 12 Physics NCERT Chapter 8 Electromagnetic Waves containing:\n\nTHEORY: Sections 8.1 to 8.4 covering:\n\n* Displacement current and Ampere-Maxwell Law\n* Sources and nature of EM waves\n* Full EM spectrum from Radio Waves to Gamma Rays\n\nFORMULAS AND EQUATIONS:\n\n* Eq 8.1: ∮B·dl = μ₀i(t)\n* Eq 8.4: id = ε₀(dΦE/dt)\n* Eq 8.6: ∮B·dl = μ₀ic + μ₀ε₀(dΦE/dt)\n* Eq 8.7: Ex = E₀ sin(kz−ωt), By = B₀ sin(kz−ωt)\n* Eq 8.9: c = 1/√(μ₀ε₀)\n* Eq 8.10: B₀ = E₀/c\n* Eq 8.11: v = 1/√(με)\n* Constant: c = 3 × 10⁸ m/s\n\nFIGURES:\n\n* Fig 8.1: Capacitor with displacement current\n* Fig 8.2: E and B fields inside capacitor\n* Fig 8.3: Electromagnetic wave along z-axis\n* Fig 8.4: Electromagnetic spectrum chart\n\nSOLVED EXAMPLES:\n\n* Example 8.1: E = 6.3j V/m gives B = 2.1 × 10⁻⁸ k T\n* Example 8.2: EM wave equation involving wavelength, frequency and electric field\n\nSPECIAL SECTIONS:\n\n* Summary with 12 key points\n* Points to Ponder\n* Maxwell and Hertz contributions\n* J.C. Bose and Marconi contributions\n\nMANDATORY INSTRUCTIONS:\n\n1. Extract questions STRICTLY from the uploaded PDF only.\n2. Cover Sections 8.1 to 8.4 proportionally.\n3. Each question must be self-contained and unambiguous.\n4. Do NOT repeat questions across difficulty levels.\n5. Use only concepts, values, formulas and examples present in the PDF.\n6. Follow CBSE Class 12 board examination style.\n7. Ensure academic correctness and chapter relevance.\n\nOUTPUT FORMAT:\n\nEASY LEVEL – 5 Questions\n\n* Type: Direct factual, definition-based, recall\n* Blooms Level: Remember, Understand\n* Marks: 1–2\n\nQ1. [Question]\n\nQ2. [Question]\n\nQ3. [Question]\n\nQ4. [Question]\n\nQ5. [Question]\n\nMEDIUM LEVEL – 5 Questions\n\n* Type: Conceptual, explanatory, application-based\n* Blooms Level: Understand, Apply, Analyse\n* Marks: 2–3\n\nQ1. [Question]\n\nQ2. [Question]\n\nQ3. [Question]\n\nQ4. [Question]\n\nQ5. [Question]\n\nHARD LEVEL – 5 Questions\n\n* Type: Numerical, derivation, higher-order thinking\n* Blooms Level: Analyse, Evaluate, Create\n* Marks: 3–5\n\nQ1. [Question]\n\nQ2. [Question]\n\nQ3. [Question]\n\nQ4. [Question]\n\nQ5. [Question]\n\nRESTRICTIONS:\n\n1. No questions from outside the uploaded PDF.\n2. No repeated questions across levels.\n3. No answers.\n4. No explanations.\n5. No hints.\n6. No step-by-step solutions.\n7. No source references in output.\n8. No equation references in output unless required inside the question.\n9. Output ONLY questions.\n10. Maintain CBSE board exam language and difficulty progression.\n\nGenerate questions only from the uploaded PDF content.\n\nPDF Content:\n{{ $json.text }}\n\n\n\nGenerate questions only from the provided content.\n\nPDF Content:\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "48e7e943-a824-4f87-88c1-93afd8923f13",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        208
+      ],
+      "id": "eea0a80d-76e5-4485-a556-0e18cf86ebd4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "tCe4Lqwe0wtmrnjZ",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nreturn items.map(item => {\n  return {\n    json: {\n      generatedQuestions: item.json.text\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        0
+      ],
+      "id": "e5b92b09-194d-42f9-8b62-0066a09c9cb0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "toText",
+        "sourceProperty": "generatedQuestions",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7e6cc910-3201-48ac-a68d-1b7af7cec00e",
+      "name": "Convert to File"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "af1c31d0-385f-4909-8d39-dc32db48f31c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a55e87f67b04a1cd9171643da4e74b8812a4a6ca9fc0e1fbae6a8cad25ec3607"
+  },
+  "id": "AFh2EJQ2M9JlvhE7",
+  "tags": []
+}
