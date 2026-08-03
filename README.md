@@ -9,7 +9,6 @@ The system is designed for teachers, content creators, and e-learning platforms 
 ---
 
 ## Features
-
 * Upload PDF documents through a web form
 * Automatic PDF text extraction
 * AI-powered question generation
